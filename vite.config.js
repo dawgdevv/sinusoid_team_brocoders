@@ -1,18 +1,20 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { resolve } from "path";
+import path from "path"; // Add this line to import the path module
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/sinusoid_team_brocoders/",
-  build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, "index.html"),
-      },
-    },
-    outDir: "dist",
+
+  css: {
+    postcss: "./postcss.config.js",
   },
-  publicDir: "public",
+  resolve: {
+    alias: {
+      "@": path.resolve(
+        path.dirname(new URL(import.meta.url).pathname),
+        "./src"
+      ),
+    },
+  },
 });

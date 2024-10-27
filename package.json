@@ -3,7 +3,6 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://dawgdevv.github.io/sinusoid_team_brocoders",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

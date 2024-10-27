@@ -22,7 +22,7 @@ function App() {
           <Navbar />
           <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <Routes>
-              <Route path="/sinusoid_team_brocoders" element={<Home />} />
+              <Route path="/" element={<Home />} />
               <Route path="/events" element={<Events />} />
               <Route path="/auth/hivesigner/callback" element={<HivesignerCallback />} />
               <Route path="/profile" element={<Profile />} />
