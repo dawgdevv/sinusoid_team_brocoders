@@ -29,7 +29,7 @@ const Navbar = () => {
                         <div className="ml-4 flex items-center md:ml-6">
                             <Link to="/profile" className="hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium">Profile</Link>
                             <Link to="/login" className="hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium">Login</Link>
-                            <Link to="/signup" className="hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium">Signup</Link>
+
                         </div>
                     </div>
                     <div className="-mr-2 flex md:hidden">

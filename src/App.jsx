@@ -1,14 +1,13 @@
-//import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Events from './pages/Events';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
-import Signup from './pages/Signup';
 import ResellTickets from './pages/Resell';
 import TicketMarketplace from './pages/Marketplace';
 import Auction from './pages/Auction';
+import HivesignerCallback from './components/HivesignerCallback';
 
 
 function App() {
@@ -25,10 +24,9 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/events" element={<Events />} />
-              {/* <Route path="/my-tickets" element={<MyTickets />} /> */}
+              <Route path="/auth/hivesigner/callback" element={<HivesignerCallback />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
               <Route path="/resell" element={<ResellTickets />} />
               <Route path="/marketplace" element={<TicketMarketplace />} />
               <Route path="/auction" element={<Auction />} />
