@@ -4,7 +4,7 @@ const Login = () => {
     const handleHivesignerLogin = () => {
         const client = new Client({
             app: 'demo-app',// Do not change this if chainging please review hivesigner signing permission
-            callbackURL: 'http://localhost:5173/auth/hivesigner/callback',//this you callback url where user will be redirected after login on profile page
+            callbackURL: 'https://dawgdevv.github.io/sinusoid_team_brocoders/auth/hivesigner/callback',//this you callback url where user will be redirected after login on profile page
             scope: ['vote', 'comment']
         });
         const loginUrl = client.getLoginURL();
