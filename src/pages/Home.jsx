@@ -1,5 +1,22 @@
-import { events } from '../constant/constant.js';
+import { useEffect, useState } from 'react';
+
+import { databases } from '../appwrite/config.js';
 const Home = () => {
+
+    const [events, setEvents] = useState([]);
+    useEffect(() => {
+        init();
+    }, []);
+
+    const init = async () => {
+        try {
+            const response = await databases.listDocuments(import.meta.env.VITE_APPWRITE_DATABASE_ID, import.meta.env.VITE_APPWRITE_DATABASE_ID_EVENTS);
+            setEvents(response.documents);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     return (
         <div className="max-w-4xl mx-auto px-4 py-8">
             <h1 className="text-4xl font-bold mb-6 text-center text-primary">Welcome to Event Ticket Booking</h1>
@@ -8,7 +25,7 @@ const Home = () => {
                 <h2 className="text-2xl font-semibold mb-4 text-primary">Featured Events</h2>
                 <ul className="space-y-6">
                     {events.map((event) => (
-                        <li key={event.id} className="bg-background p-4 rounded-md shadow transition-all hover:shadow-md">
+                        <li key={event.$id} className="bg-background p-4 rounded-md shadow transition-all hover:shadow-md">
                             <h3 className="text-xl font-semibold mb-2 text-primary">{event.name}</h3>
                             <p className="text-muted-foreground">
                                 <span className="font-medium">Date:</span> {event.date}
