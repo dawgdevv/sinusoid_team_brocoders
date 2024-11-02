@@ -1,4 +1,4 @@
-import { Client, Databases, ID } from "appwrite";
+import { Client, Databases, ID, Query } from "appwrite";
 
 const client = new Client();
 client
@@ -7,4 +7,8 @@ client
 
 const databases = new Databases(client);
 
-export { client, databases, ID };
+const id = ID.unique();
+
+const query = new Query();
+
+export { client, databases, id, query };
