@@ -26,7 +26,7 @@ const Login = () => {
     const handleHivesignerLogin = () => {
         const client = new Client({
             app: 'demo-app',
-            callbackURL: 'http://localhost:5173/login',  // Updated callback URL
+            callbackURL: 'https://sinusoid-team-brocoders.vercel.app/login',  // Updated callback URL
             scope: ['vote', 'comment']
         });
         const loginUrl = client.getLoginURL();
