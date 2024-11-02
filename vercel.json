@@ -1,0 +1,41 @@
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET,POST,PUT,DELETE,OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-Requested-With,Content-Type,X-Appwrite-Project,Authorization"
+        },
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        },
+        {
+          "key": "Set-Cookie",
+          "value": "SameSite=None; Secure"
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "src": "/login",
+      "dest": "/index.html",
+      "status": 200
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/favicon.ico"
+    }
+  ]
+}

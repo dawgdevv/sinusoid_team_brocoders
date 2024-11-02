@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path"; // Add this line to import the path module
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,12 +8,44 @@ export default defineConfig({
   css: {
     postcss: "./postcss.config.js",
   },
-  resolve: {
-    alias: {
-      "@": path.resolve(
-        path.dirname(new URL(import.meta.url).pathname),
-        "./src"
-      ),
+
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://cloud.appwrite.io/v1",
+        changeOrigin: true,
+        secure: true,
+        headers: {
+          Origin: "https://sinusoid-team-brocoders.vercel.app",
+        },
+      },
+    },
+    cors: {
+      origin: [
+        "https://cloud.appwrite.io",
+        "https://localhost:5173",
+        "https://hivesigner.com",
+        "https://sinusoid-team-brocoders.vercel.app",
+      ],
+      credentials: true,
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: [
+        "Content-Type",
+        "X-Appwrite-Project",
+        "X-Appwrite-Key",
+        "Authorization",
+      ],
+    },
+  },
+
+  build: {
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["hivesigner"],
+        },
+      },
     },
   },
 });
