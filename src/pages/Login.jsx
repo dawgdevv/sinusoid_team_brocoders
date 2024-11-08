@@ -6,12 +6,9 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [username, setUsername] = useState('');
 
     const handleKeychainLogin = async () => {
-        setLoading(true);
-        setError(null);
-
         try {
             const keychain = new KeychainSDK(window);
 
@@ -19,75 +16,65 @@ const Login = () => {
             const isKeychainInstalled = await keychain.isKeychainInstalled();
 
             if (!isKeychainInstalled) {
-                throw new Error('Please install Hive Keychain browser extension first');
+                throw new Error('Please install Hive Keychain first');
             }
 
             // Generate random string for login challenge
             const loginMessage = JSON.stringify({
-                type: 'login',
-                app: 'DTIX',
+                login: Math.random().toString(36).substring(2),
                 timestamp: Date.now()
             });
 
             // Request login with Keychain
             const login = await keychain.login({
-                username: '', // Empty username lets user choose account
+                username: username,// Empty username lets user choose account
                 message: loginMessage,
                 method: 'Posting',
-                title: 'Login to DTIX',
-                // Add error handling options
-                check: true,
-                signedMessageId: 'login'
+                title: 'Login to DTIX'
             });
 
-            if (login?.success && login?.data?.username) {
+            if (login && login.success) {
                 // Store login data
                 localStorage.setItem('hive_username', login.data.username);
                 localStorage.setItem('hive_publicKey', login.data.publicKey);
-                localStorage.setItem('hive_method', 'keychain');
 
                 // Navigate to profile
                 navigate('/profile');
             } else {
-                throw new Error(login?.error || 'Login failed. Please try again.');
+                throw new Error('Login failed');
             }
 
         } catch (err) {
             console.error('Login error:', err);
-            setError(err.message || 'Failed to login. Please make sure Hive Keychain is installed and unlocked.');
-        } finally {
-            setLoading(false);
+            setError(err.message || 'Failed to login');
         }
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-300">
             <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold mb-6 text-center">Login with Hive</h2>
+                <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
                 {error && (
                     <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
                         {error}
                     </div>
                 )}
+                <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter your username"
+                    className="username-input"
+                />
                 <button
                     onClick={handleKeychainLogin}
-                    disabled={loading}
-                    className={`w-full bg-black text-white py-2 px-4 rounded-md transition-colors ${loading ? 'bg-gray-500 cursor-not-allowed' : 'hover:bg-green-600'
-                        }`}
+                    className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-green-600 transition-colors"
                 >
-                    {loading ? 'Connecting...' : 'Login with Hive Keychain'}
+                    Login with Hive Keychain
                 </button>
                 <p className="mt-4 text-sm text-center text-gray-600">
-                    Please install Hive Keychain browser extension if you haven&apos;t already
+                    Please make sure you have Hive Keychain installed
                 </p>
-                <a
-                    href="https://chrome.google.com/webstore/detail/hive-keychain/jcacnejopjdphbnjgfaaobbfafkihpep"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 text-sm text-center block text-blue-600 hover:text-blue-800"
-                >
-                    Get Hive Keychain Extension
-                </a>
             </div>
         </div>
     );
