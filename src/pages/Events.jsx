@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { databases } from '../appwrite/config';
-import { TicketService } from '../services/ticketservice.js';
+import { TicketService } from '../services/ticketservice';
 
 function Events() {
     const [events, setEvents] = useState([]);
@@ -29,26 +29,24 @@ function Events() {
     const handleBookTicket = async (event) => {
         setBookingStatus({ loading: true, error: null, success: false });
         try {
-            const userId = import.meta.env.VITE_APPWRITE_DATABASE_ID_USERS; // Get logged in user ID
+            const userId = localStorage.getItem('hive_username'); // Get logged in user ID
             if (!userId) {
                 throw new Error('User not logged in');
             }
 
-            const ticket = await TicketService.createTicket(
-                event.$id,
-                userId,
-                event.price
-            );
+            // Verify price is a valid number
+            const price = parseFloat(event.price);
+            if (isNaN(price) || price <= 0) {
+                throw new Error('Invalid ticket price');
+            }
 
+            await TicketService.createTicket(event.$id, userId, price);
             setBookingStatus({
                 loading: false,
                 error: null,
                 success: true
             });
-
-            // Show success message
-            alert(`Ticket booked successfully! Ticket number: ${ticket.ticket_number}`);
-
+            alert('Ticket booked successfully!');
         } catch (error) {
             setBookingStatus({
                 loading: false,

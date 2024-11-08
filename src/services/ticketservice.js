@@ -1,23 +1,78 @@
-import { databases, id } from "../appwrite/config";
-import { Query } from "appwrite";
+// ticketService.js
+import { databases } from "../appwrite/config";
+import { ID } from "appwrite";
 
 export class TicketService {
   static async createTicket(eventId, userId, price) {
     const ticketNumber = this.generateTicketNumber();
+    const uniqueId = ID.unique();
 
     try {
-      const ticket = await databases.createDocument("", "tickets", id, {
-        ticket_number: ticketNumber,
+      // Create ticket in Appwrite
+      const ticket = await databases.createDocument(
+        import.meta.env.VITE_APPWRITE_DATABASE_ID,
+        import.meta.env.VITE_APPWRITE_DATABASE_ID_TICKETS,
+        uniqueId,
+        {
+          ticket_number: ticketNumber,
+          eventid: eventId,
+          userid: userId,
+          price: price,
+          status: "pending",
+          created_at: new Date().toISOString(),
+          qr_code: `${ticketNumber}-${eventId}-${userId}`,
+          is_used: false,
+          is_resale: false,
+        }
+      );
+
+      // Check if Hive Keychain is installed
+      if (typeof window.hive_keychain === "undefined") {
+        throw new Error("Please install Hive Keychain extension first");
+      }
+
+      // Create custom JSON data
+      const customJsonData = {
+        type: "ticket_purchase",
+        ticket_id: uniqueId,
         event_id: eventId,
-        user_id: userId,
+        ticket_number: ticketNumber,
         price: price,
-        status: "active",
-        created_at: new Date().toISOString(),
-        qr_code: `${ticketNumber}-${eventId}-${userId}`, // Base for QR code generation
-        is_used: false,
-        is_resale: false,
+        timestamp: Date.now(),
+      };
+
+      // Return promise for handling async Keychain operation
+      return new Promise((resolve, reject) => {
+        window.hive_keychain.requestCustomJson(
+          userId,
+          "dtix_tickets", // Custom JSON ID
+          "Active", // Required auth type
+          JSON.stringify(customJsonData),
+          "Purchase Event Ticket",
+          (response) => {
+            if (response.success) {
+              // Update ticket status to active after successful transaction
+              databases.updateDocument(
+                import.meta.env.VITE_APPWRITE_DATABASE_ID,
+                import.meta.env.VITE_APPWRITE_DATABASE_ID_TICKETS,
+                uniqueId,
+                { status: "active" }
+              );
+              console.log("Transaction successful:", response);
+              resolve(ticket);
+            } else {
+              console.error("Transaction failed:", response.message);
+              // Delete the ticket if transaction fails
+              databases.deleteDocument(
+                import.meta.env.VITE_APPWRITE_DATABASE_ID,
+                import.meta.env.VITE_APPWRITE_DATABASE_ID_TICKETS,
+                uniqueId
+              );
+              reject(new Error(response.message || "Transaction failed"));
+            }
+          }
+        );
       });
-      return ticket;
     } catch (error) {
       console.error("Error creating ticket:", error);
       throw error;
@@ -25,40 +80,10 @@ export class TicketService {
   }
 
   static generateTicketNumber() {
-    // Generate unique 12-digit ticket number
     const timestamp = Date.now().toString().slice(-10);
-    const random = Math.floor(Math.random() * 100)
+    const random = Math.floor(Math.random() * 1000)
       .toString()
-      .padStart(2, "0");
+      .padStart(3, "0");
     return `TIX${timestamp}${random}`;
   }
-
-  static async getEventTickets(eventId) {
-    try {
-      const tickets = await databases.listDocuments(
-        import.meta.env.VITE_APPWRITE_DATABASE_ID,
-        import.meta.env.VITE_APPWRITE_COLLECTION_ID_TICKETS,
-        [Query.equal("event_id", eventId)]
-      );
-      return tickets;
-    } catch (error) {
-      console.error("Error fetching tickets:", error);
-      throw error;
-    }
-  }
-
-  static async getUserTickets(userId) {
-    try {
-      const tickets = await databases.listDocuments(
-        "import.meta.env.VITE_APPWRITE_DATABASE_ID",
-        "import.meta.env.VITE_APPWRITE_COLLECTION_ID_TICKETS",
-        [Query.equal("user_id", userId)]
-      );
-      return tickets;
-    } catch (error) {
-      console.error("Error fetching user tickets:", error);
-      throw error;
-    }
-  }
 }
-export default TicketService;
