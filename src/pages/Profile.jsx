@@ -1,6 +1,7 @@
+// Profile.jsx
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Client } from 'hivesigner';
+import hive from '@hiveio/hive-js';
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -9,30 +10,33 @@ const Profile = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem('hivesigner_token');
-        if (!token) {
+        const username = localStorage.getItem('hive_username');
+        if (!username) {
             navigate('/login');
             return;
         }
 
-        const client = new Client({
-            app: 'DTIX',
-            accessToken: token
-        });
-
-        client.me((err, result) => {
-            setLoading(false);
+        // Fetch user data from Hive blockchain
+        hive.api.getAccounts([username], (err, result) => {
             if (err) {
                 console.error('Error fetching user info:', err);
-                setError(err.error_description || 'Failed to fetch user information');
-            } else {
-                setUser(result.account);
+                setError(err.message || 'Failed to fetch user information');
+                setLoading(false);
+                return;
             }
+
+            if (result && result.length > 0) {
+                setUser(result[0]);
+            } else {
+                setError('Account not found');
+            }
+            setLoading(false);
         });
     }, [navigate]);
 
     const handleLogout = () => {
-        localStorage.removeItem('hivesigner_token');
+        localStorage.removeItem('hive_username');
+        localStorage.removeItem('hive_publicKey');
         navigate('/login');
     };
 
@@ -61,7 +65,7 @@ const Profile = () => {
                     <strong>Username:</strong> {user.name}
                 </div>
                 <div className="mb-4">
-                    <strong>Reputation:</strong> {user.reputation}
+                    <strong>Reputation:</strong> {hive.formatter.reputation(user.reputation)}
                 </div>
                 <div className="mb-4">
                     <strong>Balance:</strong> {user.balance}

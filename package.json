@@ -10,13 +10,16 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@hiveio/hive-js": "^2.0.8",
     "appwrite": "^16.0.2",
     "dotenv": "^16.4.5",
     "gh-pages": "^6.2.0",
     "hivesigner": "^3.3.4",
+    "keychain-sdk": "^0.8.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.27.0"
+    "react-router-dom": "^6.27.0",
+    "vite-plugin-node-polyfills": "^0.22.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",

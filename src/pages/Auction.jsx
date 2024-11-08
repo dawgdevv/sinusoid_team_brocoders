@@ -33,8 +33,8 @@ const Auction = () => {
                     <div key={item.id} className="bg-white p-6 rounded-lg shadow-md">
                         <h2 className="text-xl font-semibold mb-2">{item.eventName}</h2>
                         <p className="text-gray-600 mb-1"><span className="font-medium">Date:</span> {item.date}</p>
-                        <p className="text-gray-600 mb-1"><span className="font-medium">Starting Bid:</span> ${item.startingBid}</p>
-                        <p className="text-gray-600 mb-4"><span className="font-medium">Highest Bid:</span> ${item.highestBid}</p>
+                        <p className="text-gray-600 mb-1"><span className="font-medium">Starting Bid:</span> {item.startingBid}</p>
+                        <p className="text-gray-600 mb-4"><span className="font-medium">Highest Bid:</span> {item.highestBid}</p>
                         <input
                             type="number"
                             value={bidAmount}
