@@ -5,6 +5,7 @@ import { AuctionService } from '../services/auctionservices';
 function Auction() {
     const [auctionItems, setAuctionItems] = useState([]);
     const [bidAmount, setBidAmount] = useState('');
+    const [timer, setTimer] = useState(300); // 5 minutes countdown
     const username = localStorage.getItem('hive_username');
 
     const handleBidChange = (e) => {
@@ -13,6 +14,17 @@ function Auction() {
 
     useEffect(() => {
         init();
+        const countdown = setInterval(() => {
+            setTimer(prevTimer => {
+                if (prevTimer <= 1) {
+                    clearInterval(countdown);
+                    return 0;
+                }
+                return prevTimer - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(countdown);
     }, []);
 
     const placeBid = async (itemId) => {
@@ -43,11 +55,20 @@ function Auction() {
         catch (error) {
             console.error(error);
         }
-    }
+    };
+
+    const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+    };
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-6 text-center text-black">Auction for Premium Tickets</h1>
+            <div className="text-center mb-4">
+                <span className="text-xl font-semibold">Time Remaining: {formatTime(timer)}</span>
+            </div>
             <div className="grid gap-6 md:grid-cols-2">
                 {auctionItems.map(item => (
                     <div key={item.$id} className="bg-white p-6 rounded-lg shadow-md">
@@ -73,6 +94,6 @@ function Auction() {
             </div>
         </div>
     );
-};
+}
 
 export default Auction;
