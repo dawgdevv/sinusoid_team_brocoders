@@ -5,6 +5,7 @@ import { AuctionService } from '../services/auctionservices';
 function Auction() {
     const [auctionItems, setAuctionItems] = useState([]);
     const [bidAmount, setBidAmount] = useState('');
+    const username = localStorage.getItem('hive_username');
 
     const handleBidChange = (e) => {
         setBidAmount(e.target.value);
@@ -16,7 +17,7 @@ function Auction() {
 
     const placeBid = async (itemId) => {
         try {
-            const userId = "bluegreenred"; // Replace with actual user ID
+            const userId = username; // Replace with actual user ID
             await AuctionService.placeBid(itemId, userId, parseFloat(bidAmount));
             const updatedItems = auctionItems.map(item => {
                 if (item.$id === itemId && parseFloat(bidAmount) > item.highest_bid) {
