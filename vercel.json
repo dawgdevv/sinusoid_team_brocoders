@@ -1,5 +1,9 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" },
+    { "source": "/login", "destination": "/index.html" },
+    { "source": "/favicon.ico", "destination": "/favicon.ico" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -25,17 +29,6 @@
           "value": "SameSite=None; Secure"
         }
       ]
-    }
-  ],
-  "routes": [
-    {
-      "src": "/login",
-      "dest": "/index.html",
-      "status": 200
-    },
-    {
-      "src": "/favicon.ico",
-      "dest": "/favicon.ico"
     }
   ]
 }
