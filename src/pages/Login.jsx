@@ -31,7 +31,7 @@ const Login = () => {
 
             // Request login with Keychain
             const login = await keychain.login({
-                username: 'bluegreenred', // Empty username lets user choose account
+                username: '', // Empty username lets user choose account
                 message: loginMessage,
                 method: 'Posting',
                 title: 'Login to DTIX',
