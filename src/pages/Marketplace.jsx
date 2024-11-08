@@ -75,7 +75,7 @@ const TicketMarketplace = () => {
                     <div key={ticket.id} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                         <h2 className="text-xl font-semibold mb-2 text-black">{ticket.eventName}</h2>
                         <p className="text-gray-600 mb-1"><span className="font-medium">Date:</span> {ticket.date}</p>
-                        <p className="text-gray-600 mb-1"><span className="font-medium">Price:</span> ${ticket.price}</p>
+                        <p className="text-gray-600 mb-1"><span className="font-medium">Price:</span> {ticket.price}</p>
                         <p className="text-gray-600 mb-4"><span className="font-medium">Seller:</span> {ticket.seller}</p>
                         <button
                             onClick={() => handlePurchase(ticket.id)}

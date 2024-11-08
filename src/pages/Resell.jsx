@@ -57,7 +57,7 @@ const ResellTickets = () => {
                             >
                                 <p className="font-semibold">{ticket.eventName}</p>
                                 <p className="text-sm text-gray-600">Date: {ticket.date}</p>
-                                <p className="text-sm text-gray-600">Current Price: ${ticket.price}</p>
+                                <p className="text-sm text-gray-600">Current Price: {ticket.price}</p>
                             </li>
                         ))}
                     </ul>
